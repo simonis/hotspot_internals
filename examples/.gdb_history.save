@@ -1,0 +1,510 @@
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+c
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+call find($pc)
+where
+call ps()
+call help
+call help()
+call pns($sp, $rbp, $pc)
+x /4i $pc
+p $rsi
+si
+where
+list
+s
+n
+n
+fin
+n
+s
+n
+where
+n
+fin
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+si
+n
+quit
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheckQuit
+c
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+si
+n
+i b
+list
+fin
+where
+fin
+watch errno
+n
+s
+n
+fin
+quit
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+i thread
+where
+thread 2
+where
+call pns($sp, $rbp, $pc)
+c
+info threads
+call pns($sp, $rbp, $pc)
+si
+n
+where
+fin
+where
+fin
+quit
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+where
+si
+n
+s
+n
+c
+c
+call pns($sp, $rbp, $pc)
+si
+n
+s
+n
+list
+p info->si_addr
+p info
+p *info
+n
+s
+list
+n
+list
+n
+p cb
+p cb->print()
+n
+p cm->print()
+n
+list
+n
+call find(target_pc)
+b *0x00007fffe46f5178
+n
+call find($pc)
+x /8i $pc
+si
+call find(0x7fffe461ee20)
+si
+n
+set TraceDeoptimization=true
+c
+c
+i b
+del 1
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+si
+n
+si
+n
+si
+c
+call pns($sp, $rbp, $pc)
+x /4i $pc
+si
+n
+s
+n
+p addr
+n
+call pns($sp, $rbp, $pc)
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+call pns($sp, $rbp, $pc)
+c
+call pns($sp, $rbp, $pc)
+c
+call pns($sp, $rbp, $pc)
+c
+c
+call pns($sp, $rbp, $pc)
+call find(0x00007fffe46f4f4c)
+call find(0x00007fffe4558312)
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+call find($pc)
+c
+call find($pc)
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+si
+n
+s
+n
+list
+n
+s
+n
+list
+n
+fin
+call find(0x7fffe4538cb7)
+n
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+c
+call find($pc)
+thread 2
+where
+c
+call find($pc)
+x /16i 0x00007fffe4558300
+x /1g $r13
+x /3b $r13
+watch *0x7fff3cf30c11
+c
+i b
+del 2
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+c
+where
+c
+x /3b $r13
+watch *((int*)0x7fff3cf30c10)
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+del 3
+c
+c
+where
+b *$pc
+call find(0x7fffe4558312)
+print $r13
+print /x $r13
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+del 4
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+c
+call find($pc)
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::getXXX* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="only org.simonis*" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="help" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis*" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::**" -XX:+PrintCompilation org.simonis.NullCheck
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="exclude java/*.*" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -XX:+PrintCompilation org.simonis.NullCheck
+c
+kill
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+kill
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+call find($pc)
+x /20i 0x00007fffe47046c0
+x /40i 0x00007fffe47046c0
+si
+n
+s
+n
+p stub
+call find(stub)
+call find(0x7fffe461ee20)
+c
+call pns($sp, $rbp, $pc)
+si
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+si
+n
+s
+n
+p stub
+c
+call pns($sp, $rbp, $pc)
+si
+n
+s
+fin
+n
+where
+c
+si
+n
+s
+n
+b os_linux_x86.cpp:475
+n
+p /x stub
+call find(stub)
+tb *stub
+c
+si
+call find($pc)
+c
+call pns($sp, $rbp, $pc)
+si
+i b
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+c
+x /8i $pc
+si
+n
+c
+n
+call find(stub)
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+si
+n
+s
+n
+c
+n
+p /x stub
+call find(stub)
+c
+call pns($sp, $rbp, $pc)
+c
+quit
+run  -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+si
+n
+s
+n
+where
+b os_linux_x86.cpp:475
+c
+n
+call find(stub)
+tb *stub
+c
+x /4i $pc
+call find(0x7fffe461ee20)
+c
+call pns($sp, $rbp, $pc)
+si
+where
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+si
+n
+c
+call pns($sp, $rbp, $pc)
+c
+c
+call pns($sp, $rbp, $pc)
+c
+si
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+si
+c
+si
+n
+call pns($sp, $rbp, $pc)
+c
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+c
+call pns($sp, $rbp, $pc)
+si
+n
+c
+n
+call find(stub)
+tb *stub
+c
+x /4i $pc
+call find()
+call find(0x7fffe461ee20)
+c
+call pns($sp, $rbp, $pc)
+si
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation org.simonis.NullCheck
+call pns($sp, $rbp, $pc)
+si
+c
+call pns($sp, $rbp, $pc)
+si
+c
+call pns($sp, $rbp, $pc)
+si
+c
+call pns($sp, $rbp, $pc)
+si
+c
+c
+call pns($sp, $rbp, $pc)
+si
+c
+c
+run -XX:-UseCompressedOops -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+run -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+run -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+c
+c
+x /1i $pc
+p /x $rsi
+x /8g $rdx
+call find(0x000000000006a830)
+call find(0x00007fff67400000 + 0x000000000006a830<<3)
+p 0x000000000006a830<<3
+p /x 0x000000000006a830<<3
+p /x 0x000000000006a830<<3 + 0x00007fff67400000
+p /x 0x00007fff67400000 + 0x000000000006a830<<3 
+p /x 0x00007fff67400000
+p /x 0x00007fff67400000 + 1
+p /x 0x00007fff67400000
+p /x 0x0000000000354180
+p /x (0x00007fff67400000 + 0x354180)
+call find(0x7fff67754180)
+c
+x /8g $rcx
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+p /x §rsi
+p /x $rsi
+p /x $rdx
+x /8g $rdx
+x /8g $rcx
+x /8g $r8
+x /520g $r8
+x /530g $r8
+p $rdx
+p /x $rdx
+p _heap_info 
+p heapOopSize
+0x00007fff67400000
+p /x (0x00007fff677fa3d8 - 0x00007fff67400000)
+p /x (0x3fa3d8>>3)
+p /x (0x7f47b<<3)
+p (0x0007f688<<3)
+p /x (0x0007f688<<3)
+p (0x00007fff67400000 + 0x3fb440)
+p /x (0x00007fff67400000 + 0x3fb440)
+call find(0x7fff677fb440)
+x /4g 0x7fff677fb440
+kill
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+c
+x /530g $r8
+p /x ((0x7fff677fa548 - 0x00007fff67400000) >> 3)
+kill
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+kill
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+y
+c
+c
+p /x $r12
+x 4g $r12
+x /4g $r12
+x /4g $r12 + 8
+kill
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+c
+x /4i $pc
+p /x $r12
+p /x $r11
+x /4g 0x7fff67400000
+x /4g 0x7fff67400018
+si
+n
+s
+n
+p addr
+p /x 7fff67600000 - 7fff67400000
+p /x (0x7fff67600000 - 0x7fff67400000)
+p  (0x7fff67600000 - 0x7fff67400000)
+b mprotect
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck
+where
+dis 1
+c
+en 1
+dis 4
+c
+en 4
+c
+where
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck_CompOops
+del 4
+c
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck*::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck_CompOops
+c
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck*::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck*::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck_CompOops
+c
+x /4g 0x0
+x /4i $pc
+p $r12
+si
+n
+p info->si_addr
+p *info
+p info->_sifields 
+p info->_sifields->_sigfault 
+n
+c
+n
+run -XX:+UseSerialGC -XX:+UseCompressedOops -XX:HeapBaseMinAddress=0x8000000000000000 -Xlog:gc* -XX:-UseOnStackReplacement -XX:-TieredCompilation -XX:CICompilerCount=1 -Xbatch -cp dist/benchmarks.jar -XX:LoopUnrollLimit=0 -XX:CompileCommand="option org.simonis.NullCheck*::get* PrintOptoAssembly" -XX:CompileCommand="compileonly org.simonis.NullCheck*::*" -XX:CompileCommand="quiet" -Xbatch -XX:+PrintCompilation -XX:ImplicitNullCheckThreshold=1 org.simonis.NullCheck_CompOops
+quit

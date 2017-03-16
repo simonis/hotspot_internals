@@ -1,0 +1,2 @@
+java -cp ../dist/benchmarks.jar org.simonis.NullCheck getField_2
+java -cp ../dist/benchmarks.jar org.simonis.NullCheck getField_1

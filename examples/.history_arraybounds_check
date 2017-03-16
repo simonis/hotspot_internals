@@ -1,0 +1,2 @@
+java -cp ../dist/benchmarks.jar org.simonis.ArrayBoundsCheck
+java -cp ../dist/benchmarks.jar -XX:CompileCommand="option org.simonis.ArrayBoundsCheck::*_impl PrintOptoAssembly" org.simonis.ArrayBoundsCheck | less

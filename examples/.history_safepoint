@@ -1,0 +1,8 @@
+java -cp ../dist/benchmarks.jar org.simonis.LongLoopWithGC 10000
+java -cp ../dist/benchmarks.jar org.simonis.IntLoopWithGC 10000
+java -cp ../dist/benchmarks.jar org.simonis.LoopWithGC 100000000
+java -cp ../dist/benchmarks.jar -XX:-InlineMathNatives org.simonis.LoopWithGC 100000000
+java -cp ../dist/benchmarks.jar -XX:-InlineMathNatives org.simonis.NativeWithGC 10 false
+java -cp ../dist/benchmarks.jar -XX:-InlineMathNatives org.simonis.NativeWithGC 10 true
+java -cp ../dist/benchmarks.jar -XX:-InlineMathNatives -XX:+ShowSafepointMsgs org.simonis.LongLoopWithGC 10000
+java -cp ../dist/benchmarks.jar -XX:-InlineMathNatives -XX:+PrintSafepointStatistics -XX:PrintSafepointStatisticsCount=1 -XX:+ShowSafepointMsgs org.simonis.LongLoopWithGC 10000

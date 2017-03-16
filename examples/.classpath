@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jars/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="jars/jmh-core-1.14-SNAPSHOT.jar" sourcepath="jars/jmh-core-1.14-SNAPSHOT-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/HS_internals/jars/jmh-core-1.14-SNAPSHOT-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/jmh-generator-annprocess-1.14-SNAPSHOT.jar" sourcepath="jars/jmh-generator-annprocess-1.14-SNAPSHOT-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/HS_internals/jars/jmh-generator-annprocess-1.14-SNAPSHOT-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jars/jopt-simple-4.6.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

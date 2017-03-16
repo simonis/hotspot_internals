@@ -1,0 +1,949 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <meta charset="utf-8" />
+
+    <title>HotSpot Internals: Safepoints, NullPointers and StackOverflows</title>
+
+    <meta name="description" content="A deep dive into various HotSpot implemantation details" />
+    <meta name="author" content="Volker H. Simonis" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+
+    <link rel="stylesheet" href="reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="reveal.js/css/theme/jbreak2016.css" id="theme" />
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/monokai_sublime.css" />
+
+  <style type="text/css">
+.scrollable {
+    bottom: 0px;
+    overflow-y: auto  !important;
+    overflow-x: hidden !important;
+}
+
+.reveal .slides > section.demo,
+.reveal .slides > section > section.demo {
+    padding: 0;
+    height: 100%;
+}
+
+.reveal .big {
+    font-size: .8em;
+    line-height: 1.3em;
+}
+
+.reveal pre.console {
+    background-color: black;
+    color: #00ff00;
+}
+
+code.terminal .hljs-title {
+    color: #00ff00;
+}
+
+.reveal pre.noshadow {
+    border-radius: 0;
+    box-shadow: unset;
+}
+
+.reveal pre code {
+    max-height: 100%;
+}
+.bold {
+    font-weight: bold;
+}
+
+.reveal .outline_white {
+    color: white;
+    text-shadow:
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000;
+    min-height: 1.1em;
+    text-align: center;
+}
+.reveal .outline_black {
+    color: black;
+    text-shadow:
+        -2px -2px 0 #fff,
+         2px -2px 0 #fff,
+        -2px  2px 0 #fff,
+         2px  2px 0 #fff;
+    min-height: 1.1em;
+    text-align: center;
+}
+mark {
+    color: black;
+    background-color: yellow;
+    border-radius: 10px;
+}
+mark.orange {
+    color: black;
+    background-color: orange;
+    border-radius: 10px;
+}
+  </style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!--
+      Issue #1105: Keyboard shortcut to skip forward/back over fragments #1173
+      https://github.com/hakimel/reveal.js/pull/1173
+    -->
+  </head>
+
+<!--
+;; select this code and do 'M-x eval-region'
+(defun make-fragment (p1 p2)
+  "Wraps the selection into 'fragment' <span>s."
+  (interactive "r")
+  (setq inputStr (buffer-substring-no-properties p1 p2))
+  (setq inputStr (replace-regexp-in-string "&" "&amp;" inputStr))
+  (setq inputStr (replace-regexp-in-string "<" "&lt;" inputStr))
+  (setq inputStr (replace-regexp-in-string ">" "&gt;" inputStr))
+  (setq resultStr (concat "<span class=\"fragment\">" (concat inputStr "</span>")))
+  (delete-region p1 p2)
+  (insert resultStr)
+)
+
+(global-set-key (kbd "C-f") 'make-fragment)
+;; revert key-binding
+;; (global-set-key (kbd "C-f") 'forward-char)
+
+;; (vhs) The following is required to make 'C-c C-t' insert <code> tags without
+;; newlines. 'sgml-tag-alist' is the "file-local" version of 'html-tag-alist'
+(add-to-list 'html-tag-alist '("code"))
+(add-to-list 'sgml-tag-alist '("code"))
+
+-->
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section style="height:100%" data-background="images/gearbox.jpg">
+          <div style="height:10%"></div>
+          <div style="height:50%">
+            <h1 class="outline_white">HotSpot Internals:<br/>Safepoints, NullPointers and StackOverflows<br/></h1>
+            <p>
+              <span class="outline_white">Volker Simonis [Фолькер Симонис], SAP /
+                <a href="mailto:volker.simonis@gmail.com" class="outline_white">volker.simonis@gmail.com</a></span>
+            </p>
+          </div>
+          <div style="height:35%"></div>
+          <div style="height:5%">
+            <p><small><a href="http://www.sunstategearbox.com.au/wp-content/uploads/2014/09/gearbox.jpg">
+                  http://www.sunstategearbox.com.au/wp-content/uploads/2014/09/gearbox.jpg</a></small>
+            </p>
+          </div>
+        </section>
+
+<!--
+
+  ImplicitNullCheckThreshold, 3,                              \
+          "Don't do implicit null checks if NPE's in a method exceeds "     \
+          "limit
+  diagnostic_pd(bool, ImplicitNullChecks,                                   \
+          "Generate code for implicit null checks")                         \
+
+  MacroAssembler::needs_explicit_null_check() in assembler.cpp
+
+/share/software/Java/jdk1.8.0_66/jre/bin/java
+
+Benchmark                 Mode  Cnt  Score   Error  Units
+NullCheck.getField_1      avgt    5  5.309 ± 0.245  ns/op
+NullCheck.getField_2      avgt    5  5.902 ± 0.236  ns/op
+NullCheck.getNullField_1  avgt    5  3.784 ± 0.203  ns/op
+NullCheck.getNullField_2  avgt    5  3.789 ± 0.171  ns/op
+Benchmark                 Mode  Cnt  Score   Error  Units
+NullCheck.getField_1      avgt    5  5.211 ± 0.222  ns/op
+NullCheck.getField_2      avgt    5  5.950 ± 0.344  ns/op
+NullCheck.getNullField_1  avgt    5  3.813 ± 0.313  ns/op
+NullCheck.getNullField_2  avgt    5  3.758 ± 0.231  ns/op
+
+CPU with a clock rate of 3 GHz (three billion cycles per second corresponding to ~3.3×10−10seconds or 0.33 nanoseconds per cycle
+
+-->
+
+        <section style="height: 100%;">
+          <section>
+
+            <h2>Signals</h2>
+
+            <ul>
+              <li>Asynchronous notifications sent to a process/thread</li>
+              <li>Originate from 1970s Bell Labs Unix - now POSIX</li>
+              <li>Quite heavy-weight operations</li>
+              <li>Interferes with other programming models (e.g. C++ exceptions, threads)</li>
+              <li>Nevertheless reliable, cross-platform (POSIX), useful..</li>
+              <li>On Windows there's a similar mechanism called<br/>Structured/Vectored Exception Handling (SEH/VEH)</li>
+            </ul>
+          </section>
+
+          <section>
+
+            <h2>Signals</h2>
+
+            <ul>
+              <li>Many programmers are scared by signals</li>
+              <li>Ever saw <code>SIGSEGV</code>, <code>SIGILL</code>, <code>SIGBUS</code>,.. ?</li>
+              <li>They are usually associated with crashes and core files</li>
+              <li>But they can be useful :-)</li>
+            </ul>
+            <br/>
+            <p><span style="font-size:500%">DEMO<br/></span>
+            <span style="font-size:500%">CPU detection</span></p>
+            <br/>
+            <br/>
+            <br/>
+          </section>
+
+          <section class="demo">
+
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+$ java -version
+openjdk version "9-internal"
+OpenJDK Runtime Environment (slowdebug build 9-internal+0-2016-09-05-192728.simonis.jdk9-hs-comp)
+OpenJDK 64-Bit Server VM (slowdebug build 9-internal+0-2016-09-05-192728.simonis.jdk9-hs-comp, mixed mode)
+$ <span class="fragment">gdb java
+GNU gdb (Ubuntu 7.7-0ubuntu3.1) 7.7
+...
+(gdb) </span><span class="fragment">run -version
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7ffff7fdb700 (LWP 6549)]
+<mark>0x00007fffd8514513</mark> in ?? ()
+(gdb) </span><span class="fragment">where
+#0  <mark>0x00007fffd8514513</mark> in ?? ()  // gdb can't reliably find out where we are!
+#1  0x0000000000000246 in ?? ()
+#2  0x00007fffd85142a0 in ?? ()
+#3  0x00007ffff0019000 in ?? ()
+#4  0x00007ffff7fda400 in ?? ()
+#5  0x00007ffff67068c3 in VM_Version::get_processor_features ()
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/cpu/x86/vm/vm_version_x86.cpp:477
+Backtrace stopped: previous frame inner to this frame (corrupt stack?)</span>
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+(gdb) call pns($sp, $rbp, $pc)    // use helper function (call "help()" for more)
+"Executing pns"
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+v  ~BufferBlob::get_cpu_info_stub // we're in generated code..
+(gdb)<span class="fragment"> x /4i $pc
+=&gt; <mark>0x7fffd8514513</mark>:	mov    (%rsi),%eax
+   0x7fffd8514515:	lea    0x30(%rbp),%rsi
+   0x7fffd8514519:	mov    $0x10000,%eax
+   0x7fffd851451e:	and    0x4(%rsi),%eax
+(gdb)</span><span class="fragment"> print $rsi
+$3 = 0      // reading from zero obviously results in a SIGSEGV
+(gdb)</span><span class="fragment"> stepi // entering the HotSpot signal handler
+signalHandler (sig=0, info=0x800, uc=0x6f732e6567616d69) at /share/OpenJDK/jdk9-hs-comp/hotspot/src/os/linux/vm/os_linux.cpp:4219
+4219	void signalHandler(int sig, siginfo_t* info, void* uc) {
+(gdb)</span><span class="fragment"> next  // single step until we get here:
+4222	  JVM_handle_linux_signal(sig, info, uc, true);
+(gdb)</span><span class="fragment"> step
+JVM_handle_linux_signal (sig=11, info=0x7ffff7fd9bf0, ucVoid=0x7ffff7fd9ac0, abort_if_unrecognized=1)
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/os_cpu/linux_x86/vm/os_linux_x86.cpp:274
+274	                        int abort_if_unrecognized) {</span>
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+(gdb) next // single step until we get here:
+412	    if ((sig == SIGSEGV) &amp;&amp; VM_Version::is_cpuinfo_segv_addr(pc)) {
+(gdb) <span class="fragment">next
+414	      stub = VM_Version::cpuinfo_cont_addr();
+(gdb)</span><span class="fragment"> print /x stub
+$5 = <mark>0x7fffd8514515</mark>
+(gdb)</span><span class="fragment"> tbreak *stub
+Temporary breakpoint 2 at <mark>0x7fffd8514515</mark>
+(gdb)</span><span class="fragment"> cont
+Continuing.
+Temporary breakpoint 2, <mark>0x00007fffd8514515</mark> in ?? ()
+(gdb)</span><span class="fragment"> where
+#0  <mark>0x00007fffd8514515</mark> in ?? () // we're back just one instruction after the
+#1  0x0000000000000246 in ?? () //                          previous SIGSEGV
+#2  0x00007fffd85142a0 in ?? ()
+#3  0x00007ffff0019000 in ?? ()
+#4  0x00007ffff7fda400 in ?? ()
+#5  0x00007ffff67068c3 in VM_Version::get_processor_features ()
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/cpu/x86/vm/vm_version_x86.cpp:477
+Backtrace stopped: previous frame inner to this frame (corrupt stack?)</span>
+              </code>
+            </pre>
+          </section>
+
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+(gdb) up // go up the stack until we reach VM_Version::get_processor_features ()
+...
+#5  0x00007ffff67068c3 in VM_Version::get_processor_features ()
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/cpu/x86/vm/vm_version_x86.cpp:477
+477	  get_cpu_info_stub(&amp;_cpuid_info);
+(gdb)<span class="fragment"> ptype get_cpu_info_stub
+type = void (*)(void *)
+(gdb)</span><span class="fragment"> list get_cpu_info_stub             // generated by generate_get_cpu_info()
+Function "get_cpu_info_stub" not defined //                in vm_version_x86.cpp
+(gdb)</span><span class="fragment"> list vm_version_x86.cpp:340,404
+340         // Some OSs have a bug when upper 128/256bits of YMM/ZMM
+341         // registers are not restored after a signal processing.
+342         // Generate SEGV here (reference through NULL)
+344         // and check upper YMM/ZMM bits after it.
+398	    __ xorl(rsi, rsi);
+399	    VM_Version::set_cpuinfo_segv_addr(__ pc()); // Used in signal handler for identification
+400	    // Generate SEGV
+401	    __ movl(rax, Address(rsi, 0));
+403	    VM_Version::set_cpuinfo_cont_addr(__ pc()); // Used in signal handler as continuation
+404	    // Returns here after signal. Save xmm0 to check it later.</span>
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>CPU detection</h2>
+
+            <ul>
+              <li>HotSpot generates code for CPU detection (in <code>VM_Version_StubGenerator::generate_get_cpu_info()</code>)</li>
+              <li>In the previous code it checks if the YMM/ZMM registers are preserved across signals</li>
+              <li>It loads a known value into a YMM/ZMM register and generates a <code>SIGSEGV</code></li>
+              <li>The signal handler ignores the <code>SIGSEGV</code> and continues at the next instruction</li>
+              <li>Later, in <code>os_supports_avx_vectors()</code> it checks if the register values were preserved</li>
+              <li>For other CPUs (e.g. ppc64), instructions are generated which may cause a <code>SIGILL</code></li>
+              <li>This is also handled in the signal handler and the corresponding feature is disabled</li>
+            </ul>
+          </section>
+
+          <section>
+
+            <h2>CPU detection - Unified JVM Logging (<a href="http://openjdk.java.net/jeps/158">JEP 158</a>)</h2>
+
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+$ java -Xlog:os+cpu -version
+[0.011s][info][os,cpu] Logical CPUs per core: 1
+[0.011s][info][os,cpu] L1 data cache line size: 64
+[0.011s][info][os,cpu] UseSSE=4  UseAVX=1  UseAES=1  MaxVectorSize=64
+[0.011s][info][os,cpu] Allocation prefetching: PREFETCHNTA at distance 256, 3 lines of 64 bytes
+[0.011s][info][os,cpu] PrefetchCopyIntervalInBytes 576
+[0.011s][info][os,cpu] PrefetchScanIntervalInBytes 576
+[0.011s][info][os,cpu] PrefetchFieldsAhead 1
+[0.011s][info][os,cpu] ContendedPaddingWidth 128
+[0.011s][info][os,cpu] CPU:total 4 (initial active 4) (4 cores per cpu, 1 threads per core) family 6 model 69 stepping 1, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, rdrand, avx, aes, clmul, lzcnt, tsc, tscinvbit
+[0.011s][info][os,cpu] CPU Model and flags from /proc/cpuinfo:
+[0.011s][info][os,cpu] model name	: Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz
+[0.011s][info][os,cpu] flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm
+openjdk version "9-internal"
+OpenJDK Runtime Environment (slowdebug build 9-internal+0-2016-09-05-192728.simonis.jdk9-hs-comp)
+OpenJDK 64-Bit Server VM (slowdebug build 9-internal+0-2016-09-05-192728.simonis.jdk9-hs-comp, mixed mode)
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+
+            <h2>Demo - Safefetch</h2>
+
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="">
+(gdb) run -version
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7ffff7fdb700 (LWP 7885)]
+0x00007fffd8514513 in ?? ()
+(gdb) <span class="fragment">cont // Now we know that this SIGSEGV is from the CPU detection!
+Continuing.
+[New Thread 0x7fffd833d700 (LWP 7886)]
+[New Thread 0x7fffd823c700 (LWP 7887)]
+[New Thread 0x7fffd813b700 (LWP 7888)]
+[New Thread 0x7fffcbfff700 (LWP 7889)]
+[New Thread 0x7fffcbafa700 (LWP 7890)]
+[New Thread 0x7fffcb9f9700 (LWP 7891)]
+[New Thread 0x7fffcb8f8700 (LWP 7892)]
+[New Thread 0x7fffcb7f7700 (LWP 7893)]
+[New Thread 0x7fffcb6f6700 (LWP 7894)]
+... // HotSpot creates at least 10 threads (GC, JIT, VM, Timer, etc..)
+Program received signal SIGSEGV, Segmentation fault.
+0x00007fffd8691a5c in ?? ()
+</span>
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+(gdb) where
+#0  0x00007fffd8691a5c in ?? ()
+#1  0x00007ffff6432798 in SafeFetch32 (adr=0xabc0000000000abc, errValue=2748)
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/stubRoutines.hpp:464
+#2  0x00007ffff65cf278 in test_safefetch32 () at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/stubRoutines.cpp:250
+#3  0x00007ffff65cfe2d in StubRoutines::initialize2 ()
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/stubRoutines.cpp:371
+#4  0x00007ffff65cfe96 in stubRoutines_init2 () at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/stubRoutines.cpp:380
+#5  0x00007ffff603f9b1 in init_globals () at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/init.cpp:149
+#6  0x00007ffff664b7ff in Threads::create_vm (args=0x7ffff7fdae20, canTryAgain=0x7ffff7fdad0b)
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/runtime/thread.cpp:3625
+#7  0x00007ffff60cea48 in JNI_CreateJavaVM_inner (vm=0x7ffff7fdae88, penv=0x7ffff7fdae90, args=0x7ffff7fdae20)
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/prims/jni.cpp:3974
+#8  0x00007ffff60cedf0 in JNI_CreateJavaVM (vm=0x7ffff7fdae88, penv=0x7ffff7fdae90, args=0x7ffff7fdae20)
+    at /share/OpenJDK/jdk9-hs-comp/hotspot/src/share/vm/prims/jni.cpp:4069
+#9  0x00007ffff7bcd358 in InitializeJVM (pvm=0x7ffff7fdae88, penv=0x7ffff7fdae90, ifn=0x7ffff7fdaee0)
+    at /share/OpenJDK/jdk9-hs-comp/jdk/src/java.base/share/native/libjli/java.c:1489
+#10 0x00007ffff7bca171 in JavaMain (_args=0x7fffffffaa70)
+    at /share/OpenJDK/jdk9-hs-comp/jdk/src/java.base/share/native/libjli/java.c:403
+#11 0x00007ffff71cd182 in start_thread (arg=0x7ffff7fdb700) at pthread_create.c:312
+             </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+(gdb) call find($pc)  // Calling HotSpot helper function (see 'call help()' for more..)
+<mark class="orange">0x00007fffd8691a5c</mark> is at begin+0 in a stub // this is generated code again :)
+StubRoutines::SafeFetch32 [0x00007fffd8691a5c, 0x00007fffd8691a62[ (6 bytes)
+(gdb) <span class="fragment">x /3i $pc                            // %rdi = arg1, %rsi = arg2, %rax = return value
+=&gt; <mark class="orange">0x7fffd8691a5c</mark>:	mov    (%rdi),%esi // *arg1 -&gt; arg2
+   <mark>0x7fffd8691a5e</mark>:	mov    %rsi,%rax   //  arg2 -&gt; return value
+   0x7fffd8691a61:	retq
+(gdb) </span><span class="fragment">stepi // and next/step until we reach in JVM_handle_linux_signal() at:
+332	    if (StubRoutines::is_safefetch_fault(pc)) {
+333	      os::Linux::ucontext_set_pc(uc, StubRoutines::continuation_for_safefetch_fault(pc));
+(gdb) </span><span class="fragment">step
+StubRoutines::continuation_for_safefetch_fault (pc=<mark class="orange">0x7fffd8691a5c</mark>)
+(gdb) </span><span class="fragment">finish
+Run till exit from #0  StubRoutines::continuation_for_safefetch_fault (pc=<mark class="orange">0x7fffd8691a5c</mark>)
+Value returned is $9 = (u_char *) <mark>0x7fffd8691a5e</mark>  // Continuation after signal handler
+(gdb) </span><span class="fragment">finish // three times until we're back in our stub
+Run till exit from #0  JVM_handle_linux_signal (sig=11, info=0x7ffff7fda2f0, ucVoid=0x7ffff7fda1c0, abort_if_unrecognized=1)
+Run till exit from #0  signalHandler (sig=11, info=0x7ffff7fda2f0, uc=0x7ffff7fda1c0)
+Run till exit from #0  &lt;signal handler called&gt;
+<mark>0x00007fffd8691a5e</mark> in ?? ()</span>
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Demo - SafeFetch</h2>
+
+            <ul>
+              <li>Sometimes the HotSpot has to read values from unreliable addresses</li>
+              <li>HotSpot generates so called <code>SafeFetch</code> stubs for this purpose</li>
+              <li>They have the following signature: <code>int SafeFetch32(int* adr, int errValue)</code></li>
+              <li>They read and return the value stored at <code>addr</code> if possible</li>
+              <li>If that results in a <code>SIGSEGV</code>, <code>errValue</code> will be returned</li>
+              <li>The signal handler ignores the potential <code>SIGSEGV</code> and continues at the next instruction</li>
+            </ul>
+          </section>
+<!--
+    __ xorl(rsi, rsi);
+    VM_Version::set_cpuinfo_segv_addr(__ pc());
+    // Generate SEGV
+    __ movl(rax, Address(rsi, 0));
+
+    VM_Version::set_cpuinfo_cont_addr(__ pc());
+    // Returns here after signal. Save xmm0 to check it later.
+
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
+              </code>
+            </pre>
+          </section>
+-->
+        </section>
+
+        <section>
+
+          <section>
+
+            <h2>Null-Pointer Checks - C/C++</h2>
+
+            <pre class="big noshadow" data-trim="true">
+              <code class="cpp" text-trim="true" data-noescape="true">
+<![CDATA[
+struct NullCheck {
+  long x, y, z;
+  long l0001;
+};
+
+void getField(NullCheck* n1, NullCheck* n2, NullCheck* n3, NullCheck* n4) {
+  long tmp = n1->l0001;
+  n1->l0001 = n2->l0001;
+  n2->l0001 = n3->l0001;
+  n3->l0001 = n4->l0001;
+  n4->l0001 = tmp;
+}
+
+int main(int argc, char** argv) {
+  NullCheck* n = (NullCheck*)0;
+  getField(n, n, n, n);
+}
+]]>
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Null-Pointer Checks - C/C++</h2>
+
+            <p>Unmanaged languages (e.g. C/C++) don't have Null-Pointer checks:</p>
+
+            <pre class="big noshadow" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true">
+$ g++ NullCheck.cpp
+<span class="fragment">$ ./a.out</span>
+<span class="fragment">Segmentation fault (core dumped)</span>
+<span class="fragment">$ objdump --disassemble --demangle a.out</span>
+<span class="fragment">...
+&lt;getField(NullCheck* n1, NullCheck* n2, NullCheck* n3, NullCheck* n4)&gt;:
+   0:   48 8b 47 18       mov    0x18(%rdi),%rax // %rax = n1->l0001
+   4:   4c 8b 46 18       mov    0x18(%rsi),%r8  // %r8  = n2->l0001
+   8:   4c 89 47 18       mov    %r8,0x18(%rdi)  // n1->l0001 = %r8  (n2->l0001)
+   c:   48 8b 7a 18       mov    0x18(%rdx),%rdi // %rdi = n3->l0001
+  10:   48 89 7e 18       mov    %rdi,0x18(%rsi) // n2->l0001 = %rdi (n3->l0001)
+  14:   48 8b 71 18       mov    0x18(%rcx),%rsi // %rsi = n4->l0001
+  18:   48 89 72 18       mov    %rsi,0x18(%rdx) // n3->l0001 = %rsi (n4->l0001)
+  1c:   48 89 41 18       mov    %rax,0x18(%rcx) // n4->l0001 = %rax (n1->l0001)</span>
+              </code>
+            </pre>
+          </section>
+
+        </section>
+
+
+        <section style="height: 100%;">
+
+          <section>
+
+            <h2>Null-Pointer Checks - HotSpot</h2>
+
+            <p>Managed languages like Java guarantee Null-Pointer checks!</p>
+
+            <pre class="big noshadow" style="height: 70%;" data-trim="true">
+              <code class="java" text-trim="true" data-noescape="true">
+<![CDATA[
+public class NullCheck {
+  long l0000, l0001, l0002, l0003, l0004, l0005, l0006, l0007, l0008, l0009;
+  //...
+  long l0510, l0511, l0512, l0513, l0514, l0515, l0516, l0517, l0518, l0519;
+
+  void getField_1(NullCheck n1, NullCheck n2, NullCheck n3, NullCheck n4) {
+    long tmp = n1.l0001;
+    n1.l0001 = n2.l0001;
+    n2.l0001 = n3.l0001;
+    n3.l0001 = n4.l0001;
+    n4.l0001 = tmp;
+  }
+}
+]]>
+              </code>
+            </pre>
+          </section>
+          <section>
+
+            <h2>Null-Pointer Checks - HotSpot</h2>
+
+            <p>Managed languages like Java guarantee Null-Pointer checks!</p>
+
+            <pre class="big noshadow" style="height: 70%;" data-trim="true">
+              <code class="java" text-trim="true" data-noescape="true">
+<![CDATA[
+public class NullCheck {
+  long l0000, l0001, l0002, l0003, l0004, l0005, l0006, l0007, l0008, l0009;
+  //...
+  long l0510, l0511, l0512, l0513, l0514, l0515, l0516, l0517, l0518, l0519;
+
+  void getField_2(NullCheck n1, NullCheck n2, NullCheck n3, NullCheck n4) {
+    long tmp = n1.l0512;
+    n1.l0512 = n2.l0512;
+    n2.l0512 = n3.l0512;
+    n3.l0512 = n4.l0512;
+    n4.l0512 = tmp;
+  }
+}
+]]>
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%;">
+$ java -XX:CompileCommand="option *::getField_2 PrintAssembly" \
+                                                 org.simonis.NullCheck getField_2
+Compiled method (c2)    2988   34    org.simonis.NullCheck::getField_2 (37 bytes)
+  ...
+  0x00007fe7a0b6f74c: test   %rsi,%rsi
+  0x00007fe7a0b6f74f: je     0x00007fe7a0b6f7a4
+  0x00007fe7a0b6f751: test   %rdx,%rdx
+  0x00007fe7a0b6f754: je     0x00007fe7a0b6f7b5
+  0x00007fe7a0b6f756: mov    0x1010(%rdx),%r10
+  0x00007fe7a0b6f75d: mov    0x1010(%rsi),%r11 
+  0x00007fe7a0b6f764: mov    %r10,0x1010(%rsi) 
+  0x00007fe7a0b6f76b: test   %rcx,%rcx
+  0x00007fe7a0b6f76e: je     0x00007fe7a0b6f7c5
+  0x00007fe7a0b6f770: mov    0x1010(%rcx),%r10
+  0x00007fe7a0b6f777: mov    %r10,0x1010(%rdx) 
+  0x00007fe7a0b6f77e: test   %r8,%r8
+  0x00007fe7a0b6f781: je     0x00007fe7a0b6f7d5
+  0x00007fe7a0b6f783: mov    0x1010(%r8),%r10
+  0x00007fe7a0b6f78a: mov    %r10,0x1010(%rcx) 
+  0x00007fe7a0b6f791: mov    %r11,0x1010(%r8)  
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%;">
+$ java -XX:CompileCommand="option *::getField_1 PrintAssembly" \
+                                                 org.simonis.NullCheck getField_1
+Compiled method (c2)    2988   34    org.simonis.NullCheck::getField_1 (37 bytes)
+
+
+
+
+  0x00007facf0b6fccc: mov    0x18(%rsi),%r10
+  0x00007facf0b6fcd0: mov    0x18(%rdx),%r11
+  0x00007facf0b6fcd4: mov    %r11,0x18(%rsi)
+
+
+  0x00007facf0b6fcd8: mov    0x18(%rcx),%r11
+  0x00007facf0b6fcdc: mov    %r11,0x18(%rdx)
+
+
+  0x00007facf0b6fce0: mov    0x18(%r8),%r11 
+  0x00007facf0b6fce4: mov    %r11,0x18(%rcx)
+  0x00007facf0b6fce8: mov    %r10,0x18(%r8) 
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Null-Pointer Checks - HotSpot</h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+          <section>
+
+            <h2>Null-Pointer Checks &amp; Compressed Oops</h2>
+
+            <ul>
+              <li>On 64-bit platforms pointers are 8-byte aligned
+                <ul>
+                  <li>The three least-significant bits are redundant (i.e. zero)</li>
+                </ul>
+              </li>
+              <li>We can actually encode 32G within 32-bit..
+                <ul>
+                  <li>..by shifting right/left for encoding/decoding</li>
+                </ul>
+              </li>
+              <li>If (<code>Java-heap &lt; 4G &amp;&amp; max_heap_Addr &lt; 4G</code>) ==&gt; <em>Unscaled mode</em>
+                <ul>
+                  <li>No encoding/decoding - oops fit into 32 bit</li>
+                </ul>
+              </li>
+              <li>If (<code>Java-heap &lt; 32G &amp;&amp; max_heap_Addr &lt; 32G</code>) ==&gt; <em>Zero-Based mode</em>
+                <ul>
+                  <li>Shifting for encoding/decoding</li>
+                </ul>
+              </li>
+              <li>If (<code>Java-heap &lt; 32G</code>) ==&gt; <em>Heap-Based mode</em>
+                <ul>
+                  <li>Shifting plus base subtraction/addition for encoding/decoding</li>
+                </ul>
+              </li>
+              <li>See <a href="https://wiki.openjdk.java.net/display/HotSpot/CompressedOops">https://wiki.openjdk.java.net/display/HotSpot/CompressedOops</a></li>
+            </ul>
+          </section>
+
+          <section>
+
+            <h2>Null-Pointer Checks &amp; Compressed Oops</h2>
+
+            <pre class="big noshadow" style="height: 70%;" data-trim="true">
+              <code class="java" text-trim="true" data-noescape="true">
+<![CDATA[
+public class NullCheck_CompOops {
+  long l0001;
+  NullCheck_CompOops nc;
+
+  void getField_1(NullCheck_CompOops n1, NullCheck_CompOops n2) {
+    long tmp = n1.nc.l0001;
+    n1.l0001 = n2.l0001;
+    n2.l0001 = tmp;
+  }
+}
+]]>
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Null-Pointer Checks &amp; Compressed Oops</h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+<!--
+HeapBaseMinAddress
+ReservedHeapSpace::establish_noaccess_prefix()
+Universe::print_compressed_oops_mode
+-XX:+PrintCompressedOopsMode == -Xlog:gc+heap+coops
+-->
+
+          <section>
+
+            <h2>Null-Pointer Checks - Summary</h2>
+
+            <ul>
+              <li>Null-pointer checks are done implicitly (if possible):
+                <ul>
+                  <li>Not on all platforms (i.e. AIX can read from <code>0x0000</code>)</li>
+                  <li>Not all field offsets (usually within <code>`getconf PAGESIZE`</code>)</li>
+                </ul>
+              </li>
+              <li>If there are too many NPE (controlled by <code>PerBytecodeTrapLimit</code>)
+                <ul>
+                  <li>Methods are made "not-entrant" and..</li>
+                  <li>..recompiled with explicit checks instead</li>
+                </ul>
+              </li>
+              <li>Work together with Compressed Oops</li>
+            </ul>
+          </section>
+
+          <section>
+
+            <p><span style="font-size:600%">But where's the benchmark?</span></p>
+            <br/>
+            <p><a href="https://github.com/shipilev/article-compress-me/blob/master/src/main/java/net/shipilev/ImplicitNullChecks.java">
+            https://github.com/shipilev/article-compress-me/blob/master/src/main/java/net/shipilev/ImplicitNullChecks.java</a></p>
+            <br/>
+
+          </section>
+<!--
+https://github.com/shipilev/article-compress-me/blob/master/src/main/java/net/shipilev/ImplicitNullChecks.java
+-->
+        </section>
+
+
+
+<!--
+-XX:+PrintGCDetails -XX:+PrintSafepointStatistics -XX:PrintSafepointStatisticsCount=1
+SafepointTimeout
+ShowSafepointMsgs
+-XX:+UseCountedLoopSafepoints
+-->
+
+
+        <section>
+
+          <section>
+            <h2>Safepoints</h2>
+
+            <blockquote>
+              <p style="text-align:justify">
+                &ldquo; A point during program execution at which all GC roots are known<br/> and all heap object contents are consistent. &rdquo;
+              </p>
+              <footer>
+                <cite><a href="http://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html">HotSpot Glossary of Terms</a></cite>
+              </footer>
+            </blockquote>
+
+            <ul>
+              <li>HotSpot uses a <em>cooperative</em> suspension model</li>
+              <li>All threads need to come to a safepoint quickly if required
+                <ul>
+                  <li>Running interpreted: change interpreter dispatch table</li>
+                  <li>Running JIT-compiled: read global safepoint polling page</li>
+                  <li>Running in native (JNI): no need to stop<br/>
+                    - native code accesses oops trough handles<br/>
+                    - block when returning from JNI or when calling to Java</li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+
+          <section>
+
+            <h2>Safepoints</h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+
+        </section>
+
+          <section>
+
+            <h2>Array-Out-Of-Bounds Checks</h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+
+      </div>
+
+    </div>
+
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+
+    <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        //width: 1024,
+        //height: 768,
+        //width: 1280,
+        //height: 720,
+        width: 1366,
+        height: 768,
+        //width: 1920,
+        //height: 1080,
+        margin: 0.1,
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'reveal.js/plugin/highlight/highlight_9.7.0.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() {
+
+hljs.registerLanguage('terminal', function(hljs) {
+  return {
+    contains: [
+      hljs.C_LINE_COMMENT_MODE,
+      {
+        className: 'title',
+        lexemes: /[$()>_a-zA-Z0-9]+/,
+        keywords: "$ (gdb)",
+        begin: /^\$ |\(gdb\)/,
+        end: /[^\\]\n/,
+	contains: [
+          hljs.COMMENT('//', '$', { endsParent: true })
+	]
+      }
+    ]
+  }
+});
+
+hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+
+    </script>
+
+  </body>
+</html>
+
+<!--  LocalWords:  HotSpot scrollable px pre noshadow Volker Simonis builtin VM
+ -->
+<!--  LocalWords:  Observability Bytecode runtime bytecodes Ljava sayHello ns
+ -->
+<!--  LocalWords:  JBreak JVMTI JNI fPIC JDK traceMethodAgent cpp TTS Safepoint
+ -->
+<!--  LocalWords:  unboxing JIT JVM safepoints Intrinsify fff POSIX
+ -->
+<!--  LocalWords:  NullPointers StackOverflows SEH VEH AIX NPE GC
+ -->
+<!--  LocalWords:  safepoint
+ -->
