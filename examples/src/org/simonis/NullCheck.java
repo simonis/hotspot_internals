@@ -1,59 +1,54 @@
 package org.simonis;
 
 public class NullCheck {
-    
-    public static void getField_1(NullCheck n1, NullCheck n2, NullCheck n3, NullCheck n4) {
+
+    public static void swapField_1(NullCheck n1, NullCheck n2) {
         long tmp = n1.l0001;
         n1.l0001 = n2.l0001;
-        n2.l0001 = n3.l0001;
-        n3.l0001 = n4.l0001;
-        n4.l0001 = tmp;
+        n2.l0001 = tmp;
     }
 
-    public static void getField_2(NullCheck n1, NullCheck n2, NullCheck n3, NullCheck n4) {
+    public static void swapField_2(NullCheck n1, NullCheck n2) {
         long tmp = n1.l0512;
         n1.l0512 = n2.l0512;
-        n2.l0512 = n3.l0512;
-        n3.l0512 = n4.l0512;
-        n4.l0512 = tmp;
+        n2.l0512 = tmp;
     }
-    
+
     static void prompt(String msg) {
         System.out.println("==========================================");
         System.out.println(msg);
         System.out.println("==========================================");
-        System.console().readLine();        
+        System.console().readLine();
     }
     public static void main(String[] args) {
 
         NullCheck n = new NullCheck();
-        prompt("Press <RETURN>");
 
-        if (args.length == 0 || "getField_1".equals(args[0])) { 
+        if ("swapField_1".equals(args[0])) {
 
-            prompt("Calling getField_1() to JIT-compile it:");
+            prompt("Calling swapField_1() to JIT-compile it:");
             for (int i = 0; i < 20_000; i++) {
-                getField_1(n, n, n, n);
+                swapField_1(n, n);
             }
-            for (int i = 1; i < 6; i++) {
-                prompt(i + ": calling getField_1() with a NULL argument:");
+            for (int i = 1; i <= 5; i++) {
+                prompt(i + ": calling swapField_1() with a NULL argument:");
                 try {
-                    getField_1(null, n, n, n);                
+                    swapField_1(null, n);
                 } catch (NullPointerException npe) { npe.printStackTrace(System.out); }
             }
-            prompt("Calling getField_1() to JIT-compile it again:");
+            prompt("Calling swapField_1() to JIT-compile it again:");
             for (int i = 0; i < 20_000; i++) {
-                getField_1(n, n, n, n);
+                swapField_1(n, n);
             }
         }
-        else {
-            prompt("Calling getField_2() to JIT-compile it:");
+        if ("swapField_2".equals(args[0])) {
+            prompt("Calling swapField_2() to JIT-compile it:");
             for (int i = 0; i < 20_000; i++) {
-                getField_2(n, n, n, n);
-            }            
-            prompt("Calling getField_2() with a NULL argument:");
+                swapField_2(n, n);
+            }
+            prompt("Calling swapField_2() with a NULL argument:");
             try {
-                getField_2(null, n, n, n);                
+                swapField_2(null, n);
             } catch (NullPointerException npe) { npe.printStackTrace(System.out); }
         }
     }
