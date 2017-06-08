@@ -6,7 +6,7 @@ public class NativeWithGC {
         System.loadLibrary("native_call");
     }
     static native void native_call(long la[], long sleep, boolean block);
-    
+
     public static void main(String[] args) {
 
         System.out.println("Warmup done");

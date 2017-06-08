@@ -1,0 +1,532 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: fig2dev Version 3.2 Patchlevel 5e -->
+<!-- CreationDate: Thu Jun  8 17:35:59 2017 -->
+<!-- Magnification: 1.050 -->
+<svg	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	width="10.0in" height="5.5in"
+	viewBox="-1 2124 12049 6616">
+<g style="stroke-width:.025in; fill:none">
+<!-- Line: box -->
+<rect x="0" y="2125" width="12047" height="6614" rx="110" 
+style="stroke:#000000;stroke-width:0;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffffff;
+"/>
+<!-- Line: box -->
+<rect x="7984" y="7216" width="1181" height="1381" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="7984" y="6755" width="1181" height="1842" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="7606" y="5905" width="1842" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="3212" width="1181" height="236" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="3448" width="1181" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f00;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="3921" width="1181" height="708" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="3448" width="1181" height="944" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f00;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="4393" width="1181" height="283" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="4393" width="1181" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="3685" width="1181" height="708" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#00d100;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="3212" width="1181" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f00;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="3023" width="1181" height="425" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#008f8f;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="7907" width="1181" height="690" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#00b0b0;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="6755" width="1181" height="1842" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="4818" y="7907" width="1181" height="690" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#00b0b0;
+"/>
+<!-- Line: box -->
+<rect x="4818" y="6755" width="1181" height="1842" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="4629" width="1181" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffff00;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="4866" width="1181" height="236" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffff00;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="4677" width="1181" height="425" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffff00;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="2787" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="5905" width="1937" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffa1a1;
+"/>
+<!-- Line: box -->
+<rect x="9448" y="5905" width="1417" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffffff;
+"/>
+<!-- Line: box -->
+<rect x="1889" y="5905" width="3779" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ff8080;
+"/>
+<!-- Text -->
+<text xml:space="preserve" x="8598" y="7124" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">VM</text>
+<!-- Text -->
+<text xml:space="preserve" x="6661" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Old-Gen</text>
+<!-- Text -->
+<text xml:space="preserve" x="1748" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="end">Memory</text>
+<!-- Text -->
+<text xml:space="preserve" x="10157" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">C-Heap</text>
+<!-- Text -->
+<text xml:space="preserve" x="4393" y="7653" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">...</text>
+<!-- Text -->
+<text xml:space="preserve" x="4818" y="4062" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">...</text>
+<!-- Text -->
+<text xml:space="preserve" x="7700" y="4062" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">...</text>
+<!-- Text -->
+<text xml:space="preserve" x="2976" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Eden</text>
+<!-- Text -->
+<text xml:space="preserve" x="3354" y="2692" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Java</text>
+<!-- Text -->
+<text xml:space="preserve" x="6236" y="2692" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Java</text>
+<!-- Text -->
+<text xml:space="preserve" x="3354" y="7086" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">GC</text>
+<!-- Text -->
+<text xml:space="preserve" x="5385" y="7086" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">GC</text>
+<!-- Text -->
+<text xml:space="preserve" x="9070" y="2692" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Java</text>
+<!-- Line: box -->
+<rect x="4346" y="5905" width="708" height="472" rx="0" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffffff;
+"/>
+<!-- Line: box -->
+<rect x="2173" y="5905" width="2173" height="472" rx="0" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ffffff;
+"/>
+<!-- Line -->
+<polyline points="6850,3212
+7275,3212
+7275,5480
+" style="stroke:#000000;stroke-width:32;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line -->
+<polyline points="8503,3448
+8173,3448
+8173,5480
+" style="stroke:#000000;stroke-width:32;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line -->
+<polyline points="3968,3307
+4393,3307
+4393,5480
+8503,5480
+8503,5779
+" style="stroke:#000000;stroke-width:32;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Arrowhead on XXXpoint 8503 5480 - 8503 5952-->
+<polygon points="8456 5822
+8503 5917
+8551 5822
+8503 5791
+8456 5822
+
+" style="stroke:#000000;stroke-width:32;stroke-miterlimit:8;
+fill:#000000;"/>
+<!-- Line: box -->
+<rect x="2787" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#0000ff;stroke-width:63;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="5669" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#0000ff;stroke-width:63;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="8503" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#0000ff;stroke-width:63;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="7984" y="6755" width="1181" height="1842" rx="110" 
+style="stroke:#0000ff;stroke-width:63;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line -->
+<polyline points="9685,3685
+9686,3685
+9689,3683
+9695,3683
+9703,3682
+9716,3680
+9732,3679
+9752,3677
+9775,3675
+9800,3673
+9828,3671
+9859,3670
+9891,3669
+9925,3668
+9960,3668
+9996,3669
+10033,3672
+10072,3675
+10112,3680
+10153,3687
+10197,3696
+10242,3707
+10289,3721
+10339,3737
+10389,3757
+10440,3779
+10491,3803
+10537,3828
+10580,3854
+10617,3877
+10649,3897
+10676,3914
+10697,3929
+10713,3942
+10727,3952
+10737,3961
+10745,3968
+10750,3974
+10755,3980
+10761,3986
+10766,3993
+10772,4002
+10781,4013
+10792,4027
+10807,4045
+10825,4066
+10846,4093
+10872,4124
+10902,4161
+10935,4202
+10971,4249
+11007,4299
+11041,4346
+11071,4393
+11100,4437
+11126,4477
+11148,4513
+11167,4544
+11183,4570
+11196,4592
+11208,4608
+11216,4623
+11224,4634
+11230,4643
+11235,4650
+11239,4657
+11244,4664
+11249,4672
+11253,4682
+11259,4695
+11266,4710
+11274,4731
+11283,4756
+11295,4788
+11308,4825
+11321,4869
+11337,4919
+11353,4976
+11370,5037
+11385,5102
+11399,5164
+11411,5224
+11421,5281
+11429,5335
+11437,5383
+11442,5426
+11446,5465
+11449,5498
+11451,5527
+11454,5551
+11454,5572
+11454,5590
+11454,5606
+11454,5619
+11453,5633
+11451,5647
+11450,5661
+11449,5676
+11447,5694
+11446,5714
+11445,5738
+11444,5765
+11443,5798
+11442,5835
+11441,5876
+11440,5923
+11439,5973
+11438,6028
+11436,6085
+11433,6141
+11428,6211
+11423,6274
+11418,6328
+11414,6375
+11409,6412
+11406,6440
+11404,6461
+11403,6476
+11402,6485
+11401,6490
+11401,6491
+11401,6492
+11400,6493
+11398,6497
+11395,6506
+11391,6518
+11384,6537
+11376,6562
+11364,6596
+11351,6638
+11333,6687
+11313,6743
+11291,6803
+11270,6855
+11249,6906
+11229,6954
+11209,6999
+11192,7039
+11176,7075
+11162,7106
+11150,7133
+11140,7156
+11131,7176
+11124,7193
+11118,7209
+11111,7223
+11106,7236
+11100,7249
+11093,7262
+11086,7276
+11078,7293
+11068,7311
+11056,7332
+11041,7356
+11024,7384
+11004,7415
+10982,7449
+10956,7486
+10928,7526
+10897,7566
+10866,7606
+10825,7653
+10787,7694
+10753,7728
+10724,7754
+10701,7775
+10682,7788
+10668,7798
+10658,7802
+10650,7804
+10645,7804
+10641,7802
+10637,7801
+10632,7799
+10624,7799
+10613,7800
+10598,7804
+10578,7811
+10552,7821
+10520,7835
+10482,7851
+10439,7869
+10393,7889
+10346,7908
+10302,7925
+10262,7939
+10227,7950
+10199,7960
+10177,7967
+10160,7971
+10148,7975
+10138,7977
+10132,7979
+10125,7980
+10119,7981
+10112,7982
+10102,7983
+10089,7985
+10071,7989
+10046,7993
+10015,7998
+9977,8006
+9932,8013
+9881,8023
+9826,8031
+9775,8038
+9725,8046
+9677,8051
+9631,8056
+9588,8060
+9547,8064
+9509,8067
+9472,8069
+9437,8071
+9403,8073
+9371,8074
+9339,8075
+9310,8076
+9281,8077
+9256,8077
+9233,8077
+9214,8078
+9197,8078
+9185,8078
+9290,8078
+" style="stroke:#000000;stroke-width:32;
+stroke-linejoin:bevel; stroke-linecap:butt;
+"/>
+<!-- Arrowhead on XXXpoint 9185 8078 - 9118 8078-->
+<polygon points="9248 8031
+9153 8078
+9248 8125
+9279 8078
+9248 8031
+
+" style="stroke:#000000;stroke-width:32;stroke-miterlimit:8;
+fill:#000000;"/>
+<!-- Line: box -->
+<rect x="8503" y="2267" width="1181" height="2834" rx="110" 
+style="stroke:#ff0000;stroke-width:63;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Text -->
+<text xml:space="preserve" x="9118" y="3543" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">new</text>
+<!-- Line: box -->
+<rect x="3826" y="5905" width="519" height="472" rx="0" 
+style="stroke:#000000;stroke-width:0;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ff8080;
+"/>
+<!-- Line: box -->
+<rect x="2598" y="5905" width="1228" height="472" rx="0" 
+style="stroke:#000000;stroke-width:0;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ff8080;
+"/>
+<!-- Line: box -->
+<rect x="2173" y="5905" width="425" height="472" rx="0" 
+style="stroke:#000000;stroke-width:0;
+stroke-linejoin:miter; stroke-linecap:butt;
+fill:#ff8080;
+"/>
+<!-- Line -->
+<polyline points="4346,5905
+4346,6377
+" style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Line: box -->
+<rect x="1889" y="5905" width="3779" height="472" rx="110" 
+style="stroke:#000000;stroke-width:8;
+stroke-linejoin:miter; stroke-linecap:butt;
+"/>
+<!-- Text -->
+<text xml:space="preserve" x="2976" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Eden</text>
+<!-- Text -->
+<text xml:space="preserve" x="5007" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Survivor</text>
+<!-- Text -->
+<text xml:space="preserve" x="8551" y="6236" fill="#000000"  font-family="Sans" font-style="normal" font-weight="normal" font-size="224" text-anchor="middle">Polling-Page</text>
+</g>
+</svg>

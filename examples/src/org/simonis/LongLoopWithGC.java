@@ -13,7 +13,7 @@ public class LongLoopWithGC {
   public static void main(String[] args) {
 
     for (long i = 0; i < 100; i++) loop(2);
-    
+
     System.out.println("Warmup done");
 
     new Thread() {

@@ -1,1 +1,1 @@
-java -cp ../dist/benchmarks.jar org.simonis.NullCheck_Bench
+java org.simonis.NullCheck_Bench

@@ -16,5 +16,5 @@ inline,org/simonis/ArrayBoundsCheck.test3
 inline,org/simonis/ArrayBoundsCheck.test4
 inline,org/simonis/ArrayBoundsCheck.test5
 inline,org/simonis/JMH_HelloWorld.sayHello
-inline,org/simonis/NullCheck_Bench.getField_1
-inline,org/simonis/NullCheck_Bench.getField_2
+inline,org/simonis/NullCheck_Bench.swapField_1
+inline,org/simonis/NullCheck_Bench.swapField_2

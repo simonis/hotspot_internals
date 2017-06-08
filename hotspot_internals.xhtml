@@ -623,7 +623,10 @@ V  [libjvm.so+0xcb92a8]  JNI_CreateJavaVM_inner(JavaVM_**, void**, void*)+0xf6
 V  [libjvm.so+0xcb9650]  <mark class="border">JNI_CreateJavaVM</mark>+0x42
 C  [libjli.so+0x72d3]  InitializeJVM+0x13b
 C  [libjli.so+0x400b]  <mark class="border">JavaMain</mark>+0xd3
-C  [libpthread.so.0+0x8182]  start_thread+0xc2</span>
+C  [libpthread.so.0+0x8182]  start_thread+0xc2
+(gdb)</span> <span class="fragment">call find($pc)</span>
+<span class="fragment"><mark class="orange">0x00007fffd8691a5c</mark> is at begin+0 in a stub // this is generated code again :)
+StubRoutines::SafeFetch32 [0x00007fffd8691a5c, 0x00007fffd8691a62[ (6 bytes)</span>
              </code>
             </pre>
           </section>
@@ -631,13 +634,14 @@ C  [libpthread.so.0+0x8182]  start_thread+0xc2</span>
           <section class="demo">
             <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
               <code class="terminal" data-trim="true" data-noescape="true" style="height:100%">
-(gdb) call find($pc)
-<span class="fragment"><mark class="orange">0x00007fffd8691a5c</mark> is at begin+0 in a stub // this is generated code again :)
-StubRoutines::SafeFetch32 [0x00007fffd8691a5c, 0x00007fffd8691a62[ (6 bytes)
-(gdb)</span> <span class="fragment">x /3i $pc         // %rdi = arg1, %rsi = arg2, %rax = return value
-=&gt; <mark class="orange">0x7fffd8691a5c</mark>:	mov    (%rdi),%rsi // *arg1 -&gt; arg2
+(gdb) x /3i $pc         // %rdi = arg1, %rsi = arg2, %rax = return value
+<span class="fragment">=&gt; <mark class="orange">0x7fffd8691a5c</mark>:	mov    (%rdi),%rsi // *arg1 -&gt; arg2
    <mark>0x7fffd8691a5e</mark>:	mov    %rsi,%rax   //  arg2 -&gt; return value
    0x7fffd8691a61:	retq
+(gdb) </span><span class="fragment">p /x $rdi
+$1 = 0xabc0000000000abc
+(gdb) </span><span class="fragment">x /1g 0xabc0000000000abc
+0xabc0000000000abc:	Cannot access memory at address 0xabc0000000000abc
 (gdb) </span><span class="fragment">stepi // and next/step until we reach in JVM_handle_linux_signal() at:
 332   if (StubRoutines::is_safefetch_fault(pc)) {
 333     ucontext_set_pc(uc, StubRoutines::continuation_for_safefetch_fault(pc));
@@ -649,7 +653,6 @@ Value returned is $9 = (u_char *) <mark>0x7fffd8691a5e</mark>  // Continuation a
 (gdb) </span><span class="fragment">finish // three times until we're back in our stub
 Run till exit from #0  JVM_handle_linux_signal (...)
 Run till exit from #0  signalHandler (...)
-Run till exit from #0  &lt;signal handler called&gt;
 <mark>0x00007fffd8691a5e</mark> in ?? ()</span>
               </code>
             </pre>
@@ -706,8 +709,7 @@ inline int SafeFetch32(int* adr, int errValue) {
             <h2>Null-Pointer Checks - C/C++</h2>
 
             <pre class="big noshadow" data-trim="true">
-              <code class="cpp" text-trim="true" data-noescape="true">
-<![CDATA[
+              <code class="cpp" data-trim="true" data-noescape="true">
 struct NullCheck {
   long l0001;
 };
@@ -719,10 +721,9 @@ void swapFields(NullCheck* n1, NullCheck* n2) {
 }
 
 int main(int argc, char** argv) {
-  NullCheck* n = (NullCheck*)0;
+  <mark class="border">NullCheck* n = (NullCheck*)0</mark>;
   swapFields(n, n);
 }
-]]>
               </code>
             </pre>
           </section>
@@ -956,6 +957,81 @@ ShowSafepointMsgs
                 </ul>
               </li>
             </ul>
+          </section>
+
+          <section>
+            <h2>Safepoints</h2>
+
+            <div width="100%" style="position: relative; margin: 0 0 0 0px;">
+              <div class="" style="position: static;">
+                <object data="images/adjusted/SafePoint_1.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_2.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_3.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_4.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_5.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_6.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_7.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_8.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_9.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_10.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_11.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_12.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_13.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_14.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_15.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_16.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+              <div class="fragment" style="position: absolute; left: 0; top: 0; width: 100%">
+                <object data="images/adjusted/SafePoint_17.svg" type="image/svg+xml"
+                        style="width: 90%;">&nbsp;</object>
+              </div>
+            </div>
           </section>
 
           <section>

@@ -21,7 +21,7 @@ public class NullCheck_Bench {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public static void getField_1(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
+    public static void swapField_1(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
         long tmp = n1.l0001;
         n1.l0001 = n2.l0001;
         n2.l0001 = n3.l0001;
@@ -32,7 +32,7 @@ public class NullCheck_Bench {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public static void getField_2(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
+    public static void swapField_2(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
         long tmp = n1.l0512;
         n1.l0512 = n2.l0512;
         n2.l0512 = n3.l0512;
@@ -53,7 +53,7 @@ public class NullCheck_Bench {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public static void getField_1a(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
+    public static void swapField_1a(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
         long tmp = n1.l0001;
         n1.l0001 = n2.l0001;
         n2.l0001 = n3.l0001;
@@ -66,7 +66,7 @@ public class NullCheck_Bench {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public static void getField_2a(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
+    public static void swapField_2a(NullCheck_Bench n1, NullCheck_Bench n2, NullCheck_Bench n3, NullCheck_Bench n4) {
         long tmp = n1.l0512;
         n1.l0512 = n2.l0512;
         n2.l0512 = n3.l0512;
