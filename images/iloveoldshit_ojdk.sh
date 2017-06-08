@@ -1,0 +1,7 @@
+# bash iloveoldshit.sh <pid>
+# mv iloveoldshit.jstk iloveoldshit_ojdk8_nointr_nosqrt.jstk
+cat iloveoldshit_ojdk8_nointr_nosqrt.jstk | FlameGraph/stackcollapse-jstack.pl | FlameGraph/flamegraph.pl --fontsize=18 --height=28 --color=green > iloveoldshit_ojdk8_nointr_nosqrt.svg
+cat iloveoldshit_ojdk8_nointr.jstk | FlameGraph/stackcollapse-jstack.pl | FlameGraph/flamegraph.pl --fontsize=18 --height=28 --color=green > iloveoldshit_ojdk8_nointr.svg
+cat iloveoldshit_ojdk8.jstk | FlameGraph/stackcollapse-jstack.pl | FlameGraph/flamegraph.pl --fontsize=18 --height=28 --color=green > iloveoldshit_ojdk8.svg
+cat iloveoldshit_ojdk9.jstk | FlameGraph/stackcollapse-jstack.pl | FlameGraph/flamegraph.pl --fontsize=18 --height=28 --color=green > iloveoldshit_ojdk9.svg
+cat iloveoldshit_ojdk9_nointr.jstk | FlameGraph/stackcollapse-jstack.pl | FlameGraph/flamegraph.pl --fontsize=18 --height=28 --color=green > iloveoldshit_ojdk9_nointr.svg

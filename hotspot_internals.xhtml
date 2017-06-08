@@ -931,7 +931,7 @@ ShowSafepointMsgs
 -->
 
 
-        <section>
+        <section style="height: 100%;">
 
           <section>
             <h2>Safepoints</h2>
@@ -1036,7 +1036,90 @@ ShowSafepointMsgs
 
           <section>
 
-            <h2>Safepoints</h2>
+            <h2>Safepoints - <code style="text-transform: none;">LongLoopWithGC</code></h2>
+
+            <pre class="big noshadow" style="height: 100%; margin: 0;" data-trim="true">
+              <code class="java" data-trim="true" data-noescape="true" style="height:100%;">
+public class LongLoopWithGC {
+
+  ...
+
+  public static void main(String[] args) {
+    ...
+    new Thread() {
+      public void run() {
+        while(true) {
+          try { Thread.sleep(1_000); } catch (InterruptedException e) {}
+          <mark class="border">System.gc();</mark>
+        }
+      }
+    }.start();
+    ...
+  }
+}
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">LongLoopWithGC</code></h2>
+
+            <pre class="big noshadow" style="height: 100%; margin: 0;" data-trim="true">
+              <code class="java" data-trim="true" data-noescape="true" style="height:100%;">
+public class LongLoopWithGC {
+
+  static void loop(int count) {
+    for (long i = 1; i &lt; count; i++)
+      for (long j = 1; j &lt; 1_000_000; j++)
+        tmp++;
+  }
+
+  public static void main(String[] args) {
+    ...
+    long start  = System.currentTimeMillis();                           
+    <mark class="border">loop(Integer.parseInt(args[0]));</mark>
+    long end = System.currentTimeMillis();
+
+    System.out.println(end - start + "ms");
+  }
+}
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+
+            <h2><code style="text-transform: none;">LongLoopWithGC::loop()</code></h2>
+
+            <pre class="big noshadow" style="height:100%; margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true" style="height:100%;">
+B4:
+  addq    R9, #1
+  movq    [R8 + #112 (8-bit)], R9    // Field: org/simonis/LongLoopWithGC.tmp
+  <mark class="border">testl   rax, [rip + #offset_to_poll_page]</mark>        // Safepoint: poll for GC
+  cmpq    RCX, #1000000
+  jl,s    B3
+B5:
+  addq    R11, #1
+  <mark class="border">testl   rax, [rip + #offset_to_poll_page]</mark>        // Safepoint: poll for GC
+  cmpq    R11, R10
+  jge,s   B7
+B6:
+  movl    RCX, #2
+  jmp,s   B4
+B7:
+  addq    rsp, 16	# Destroy frame
+  popq    rbp
+  <mark class="border">testl   rax, [rip + #offset_to_poll_page]</mark>        // Safepoint: poll for GC
+  ret
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">LongLoopWithGC</code></h2>
             <br/>
             <br/>
             <p><span style="font-size:800%">DEMO</span></p>
@@ -1051,6 +1134,162 @@ ShowSafepointMsgs
             <br/>
             <br/>
 
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">IntLoopWithGC</code></h2>
+
+            <pre class="big noshadow" style="height: 100%; margin: 0;" data-trim="true">
+              <code class="java" data-trim="true" data-noescape="true" style="height:100%;">
+public class IntLoopWithGC {
+
+  static void loop(int count) {
+    for (<mark class="border">int i</mark> = 1; i &lt; count; i++)
+      for (<mark class="border">int j</mark> = 1; j &lt; 1_000_000; j++)
+        tmp++;
+  }
+
+  public static void main(String[] args) {
+    ...
+    long start  = System.currentTimeMillis();                           
+    loop(Integer.parseInt(args[0]));
+    long end = System.currentTimeMillis();
+
+    System.out.println(end - start + "ms");
+  }
+}
+              </code>
+            </pre>
+          </section>
+
+          <section class="demo">
+
+            <h2><code style="text-transform: none;">IntLoopWithGC::loop()</code></h2>
+
+            <pre class="big noshadow" style="margin: 0;" data-trim="true">
+              <code class="terminal" data-trim="true" data-noescape="true">
+B3:
+  movl    R8, #1
+B4:
+  addq    R11, #1
+  movq    [R10 + #112 (8-bit)], R11  // Field: org/simonis/IntLoopWithGC.tmp
+  incl    R8
+  cmpl    R8, #1000000
+  jl,s    B4
+B5:
+  incl    R9
+  cmpl    R9, RSI
+  jl,s    B3
+B6:
+  addq    rsp, 16 # Destroy frame
+  popq    rbp
+  <mark class="border">testl  rax, [rip + #offset_to_poll_page]</mark>       //  Safepoint: poll for GC
+  ret
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">IntLoopWithGC</code></h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">LoopWithGC</code></h2>
+
+            <pre class="big noshadow" style="height: 100%; margin: 0;" data-trim="true">
+              <code class="java" data-trim="true" data-noescape="true" style="height:100%;">
+public class LoopWithGC {
+
+  static double compute(int count, double d) {
+    for (int i = 0; i &lt; count; i++) {
+      d += <mark class="border">Math.pow</mark>(<mark class="border">Math.sin</mark>(d), <mark class="border">Math.sqrt</mark>(d));
+    }
+    return d;
+  }
+
+  public static void main(String[] args) throws Exception {
+    ...
+    long start  = System.currentTimeMillis();
+    compute(count, 0.0d);
+    long end = System.currentTimeMillis();
+
+    System.out.println(end - start + "ms");
+  }
+}
+              </code>
+            </pre>
+          </section>
+
+          <section>
+
+            <h2>Safepoints - <code style="text-transform: none;">LoopWithGC</code></h2>
+            <br/>
+            <br/>
+            <p><span style="font-size:800%">DEMO</span></p>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+          </section>
+
+          <section>
+            <h2>Safepoints (jdk8) - <code style="text-transform: none;">LoopWithGC</code></h2>
+
+            <div width="100%" style="position: relative; margin: 0 0 0 0px;">
+                <object data="images/iloveoldshit_ojdk8.svg" type="image/svg+xml"
+                        style="width: 100%;">&nbsp;</object>
+            </div>
+          </section>
+
+          <section>
+            <h2>Safepoints (jdk8) - <code style="text-transform: none;">LoopWithGC -XX:-InlineMathNatives -XX:DisableIntrinsic=_dsqrt</code></h2>
+
+            <div width="100%" style="position: relative; margin: 0 0 0 0px;">
+                <object data="images/iloveoldshit_ojdk8_nointr_nosqrt.svg" type="image/svg+xml"
+                        style="width: 100%;">&nbsp;</object>
+            </div>
+          </section>
+
+          <section>
+            <h2>Safepoints (jdk9) - <code style="text-transform: none;">LoopWithGC</code></h2>
+
+            <div width="100%" style="position: relative; margin: 0 0 0 0px;">
+                <object data="images/iloveoldshit_ojdk9.svg" type="image/svg+xml"
+                        style="width: 100%;">&nbsp;</object>
+            </div>
+          </section>
+
+          <section>
+            <h2>Safepoints (jdk9) - <code style="text-transform: none;">LoopWithGC -XX:-InlineMathNatives</code></h2>
+
+            <div width="100%" style="position: relative; margin: 0 0 0 0px;">
+                <object data="images/iloveoldshit_ojdk9_nointr.svg" type="image/svg+xml"
+                        style="width: 100%;">&nbsp;</object>
+            </div>
           </section>
 
         </section>

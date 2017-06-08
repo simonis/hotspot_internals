@@ -1,6 +1,6 @@
 package org.simonis;
 
-public class LoopWithGC {
+public class FlameLoopWithGC {
 
   static double compute(int count, double d) {
     for (int i = 0; i < count; i++) {
@@ -15,20 +15,10 @@ public class LoopWithGC {
       compute(2, 0.0d);
     }
 
-    new Thread() {
-      { setDaemon(true); }
-      public void run() {
-        while (true) {
-          try {
-            Thread.sleep(1_000);
-          } catch (InterruptedException e) {}
-          System.gc();
-        }
-      }
-    }.start();
-
     long start  = System.currentTimeMillis();
-    compute(Integer.parseInt(args[0]), 0.0d);
+    for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+      compute(20_000, 0.0d);
+    }
     long end = System.currentTimeMillis();
 
     System.out.println(end - start + "ms");
